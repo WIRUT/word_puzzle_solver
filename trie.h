@@ -18,18 +18,15 @@ class Node {
 	public:
     	Node();
         ~Node();
-        char  Content();                       // Returns mContent
     	void  SetContent(char c);              // Set content to in uppercase
-    	bool  WordMarker();                    // A flag if a word has formed
     	void  SetWordMarker();                 // Sets Word marker in Node
     	void  AppendChild( Node* child );      // Appends an element into array
-        Node* FindChild(char c);               // Locate character & returns it
 
-        bool  IsPathTravelled( Node* child);   // A flag to track path travlled    
-        void  ResetPathFlag( bool f );                 // Resets the path to false 
+        char  Content();                       // Returns mContent
+        bool  HasWordMarker();                 // A flag if a word has formed
 
-//    	std::vector<Node*> children() { return mChildren; };
-		//Node *children() { return mChildren
+        Node* FindChild( char c );             // Locate character & returns it
+        std::vector<Node*> children();         // Returns mChildren
 
 	private:
     	char mContent;
@@ -44,8 +41,10 @@ class Trie {
 		Trie();
 		~Trie();
 		void AddWord(std::string s);           // Adds string to the trie
-		bool SearchWord(std::string s);        // Finds word in trie
-	private:
+	    void ResetTriePaths();                 // Resets all node paths in Trie
+    	int SearchWord(std::string s);         // Finds word in trie
+	
+    private:
     	Node* root;
     	std::string ToUpperCase(std::string str);
 };

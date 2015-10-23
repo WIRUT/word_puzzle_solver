@@ -24,15 +24,33 @@ Node::~Node()                       	{}
 char Node::Content()                	{ return mContent; }
 void Node::SetContent(char c) 			{ mContent = c; }
 
-bool Node::IsPathTravelled(Node* child)	{ return mTravelledFlag; }
-void Node::ResetPathFlag(bool f)		{ mTravelledFlag = false; }
-
-bool Node::WordMarker()             	{ return mWordMarker; }
+bool Node::HasWordMarker()             	{ return mWordMarker; }
 void Node::SetWordMarker()          	{ mWordMarker = true; }
 void Node::AppendChild(Node* child) 	{ mChildren.push_back(child); }
+std::vector<Node*> Node::children() 	{ return mChildren; };
+
 
 Trie::Trie()    						{ root = new Node(); }
 Trie::~Trie()   						{}
+
+
+
+/*
+===============================================================================
+FindChild()
+
+    Finds the Node that contains the specific character and returns it
+===============================================================================
+*/
+Node* Node::FindChild(char c) {
+    for ( int i = 0; i < mChildren.size(); i++ ) {
+        Node* tmp = mChildren.at(i);
+        if ( tmp->Content() == c ) {
+            return tmp;
+        }
+    }
+    return NULL;
+}
 
 /*
 ===============================================================================
@@ -51,23 +69,6 @@ std::string Trie::ToUpperCase(std::string str) {
 	return NULL;
 }
 
-/*
-===============================================================================
-FindChild()
-
-    Finds the Node that contains the specific character and returns it
-===============================================================================
-*/
-Node* Node::FindChild(char c) {
-
-    for ( int i = 0; i < mChildren.size(); i++ ) {
-        Node* tmp = mChildren.at(i);
-        if ( tmp->Content() == c ) {
-            return tmp;
-        }
-    }
-    return NULL;
-}
 
 /*
 ===============================================================================
@@ -80,16 +81,13 @@ void Trie::AddWord(std::string str) {
 	Node* current = root;
 	int strLength = str.length();
 	str = ToUpperCase(str);
-
     if ( strLength == 0 ) {
-        current->SetWordMarker(); // an empty word
+        //current->SetWordMarker(); // an empty word
         return;
     }
-
-	if ( SearchWord(str) ) {
+	if ( SearchWord(str)==1 ) {
 		return;
 	}
-
     for ( int i = 0; i < strLength; i++ ) {
 		Node* child = current->FindChild(str[i]);
 		if ( child != NULL ) {
@@ -97,11 +95,9 @@ void Trie::AddWord(std::string str) {
 		} else {
 			Node* tmp = new Node();
 			tmp->SetContent(str[i]);
-
 			current->AppendChild(tmp);
 			current = tmp;
 		}
-
 		if ( i == strLength - 1) {
 			current->SetWordMarker();
 		}
@@ -112,30 +108,30 @@ void Trie::AddWord(std::string str) {
 ===============================================================================
 SearchWord()
 
-    Searches for the word in the trie and returns a boolean value if found
+    Searches for the word in the trie and returns a int for each state
+    0 = String sent has no spelling (i.e. axz vs axe )
+    1 = String sent is a word
+    2 = String sent is a word forming, but not a word yet (i.e. Thursda_)
 ===============================================================================
 */
-bool Trie::SearchWord(std::string str) {
+int Trie::SearchWord(std::string str) {
 	if (str.length() > 0) {
 		Node* current = root;
 		str = ToUpperCase(str);
-
 		while ( current != NULL ) {
-
 			for ( int i = 0; i < str.length(); i++ ) {
-				Node* tmp = current->FindChild(str[i]);
-				if ( tmp == NULL ) {
-					return false;
+				Node* tmp = current->FindChild(str[i]); // Last letter of word found
+				if ( tmp == NULL ) {					// Last letter of word not found
+					return 0; 
 				}
 				current = tmp;
 			}
-
-			if ( current->WordMarker() ) {
-				return true;
+			if ( current->HasWordMarker() ) {			
+				return 1;							// Check if it is word. If so add to list
 			} else {
-				return false;
+				return 2;							// Not word yet. Keep looking
 			}
 		}
     }
-    return false;
+    return 0;
 }

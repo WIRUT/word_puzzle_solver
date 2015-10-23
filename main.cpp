@@ -147,7 +147,7 @@ isStrLengthInBounds()
 	Checks to see if str is no bigger than matrix size
 ===============================================================================
 */
-bool isStrLengthInBounds( std::string str ) {
+bool isStrLengthInUpperBounds( std::string str ) {
 	if ( str.length() <= getNumberOfElementsInMatrix() ) {
 		return true;
 	}
@@ -175,7 +175,8 @@ Trie* LoadTrie( std::set <char> charSet ) {
 			std::string formattedWord = RemoveStrDelimiter(word);
 
 			bool strInCharSet = IsWordInCharSet( charSet, formattedWord);
-			bool strLengthInBounds = isStrLengthInBounds( formattedWord );			
+			bool strLengthInBounds = isStrLengthInUpperBounds( formattedWord );
+
 
 			if ( strLengthInBounds && strInCharSet ) {
 				trie->AddWord( formattedWord );
@@ -216,6 +217,29 @@ void DisplayMatrix( char arr[4][4], int n ) {
 
 /*
 ===============================================================================
+Test Functions
+
+===============================================================================
+*/
+void TestIfWordExists ( Trie* dicTrie, std::string testWord ) {
+
+	if ( dicTrie != NULL ) {
+		std::cout << "Searching for " << testWord << "\n";
+		std::cout << "Test word Length: " << testWord.length() << "\n";
+
+		if (dicTrie->SearchWord( testWord ) ) {
+			std::cout << "Found " << testWord << "!\n";
+			std::cout << "Shit works!\n";
+		} else {
+			std::cout << "NOT FOUND " << testWord << "\n";
+		}
+	} else {
+		std::cout << "Fuck! Trie is empty. =(\n";
+	}
+}
+
+/*
+===============================================================================
 Main()
 
 ===============================================================================
@@ -229,8 +253,13 @@ int main( int agrc, char *argv[] ) {
 	std::set<char> charSet = GetCharSet ( matrixArr, 4 );
 	Trie *dicTrie = LoadTrie( charSet );
 
-	PathFinder *pathfind;
-	pathfind->BeginSearch( dicTrie );
+	std::cout << "The matrix is: \n";
+	DisplayMatrix ( matrixArr, 4 ); 
+
+	TestIfWordExists( dicTrie, "aah");
+
+	PathFinder PathFinder( matrixArr, dicTrie );
+
 
 	return 0;
 }
