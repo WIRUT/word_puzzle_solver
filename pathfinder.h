@@ -65,7 +65,6 @@ class PathFinder {
 		std::vector<char> wordStrVector;
 		std::vector<std::string> wordList;
 		Trie* dicTrie;
-		int wordsFound;
 
 };
 

@@ -244,20 +244,39 @@ Main()
 
 ===============================================================================
 */
-int main( int agrc, char *argv[] ) {
-	char matrixArr[4][4] = {{'s','t','n','g'},
-							{'e','i','a','e'},
-							{'d','r','l','s'},
-							{'s','e','p','o'}};
+int main() {
+	char matrixArr[4][4];
+
+	std::string userInput;
+	std::cout << "Welcome to The Boggle Word-Puzzle Solver." 
+	"Please enter in the 4x4 matrix of letters\n";
+
+	for( int i=0; i<4; i++ ) {
+		std::cout << "Please enter the 4 letters in the ";
+		switch (i) {
+			case 1:
+				std::cout << "2nd row.\n";
+				break;
+			case 2:
+				std::cout << "3rd row.\n";
+				break;
+			case 3:
+				std::cout << "4th row.\n";
+				break;
+			default:
+				std::cout << "1st row.\n";
+				break;
+		}
+		cin >> userInput;
+		for( int j=0; j<4; j++ ) {
+			matrixArr[i][j] = userInput.at(j);
+		}
+	}
 
 	std::set<char> charSet = GetCharSet ( matrixArr, 4 );
 	Trie *dicTrie = LoadTrie( charSet );
 
 	std::cout << "The matrix is: \n";
-	DisplayMatrix ( matrixArr, 4 ); 
-
-	TestIfWordExists( dicTrie, "aah");
-
 	PathFinder PathFinder( matrixArr, dicTrie );
 
 

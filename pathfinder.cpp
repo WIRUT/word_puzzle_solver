@@ -31,7 +31,6 @@ PathFinder::PathFinder( char matrix[4][4], Trie* trie ) {
 	Element matrixPath[4][4];
 	dicTrie = trie;
 	matrixLimit = 4;
-	int wordsFound = 0;
 	if (matrix != NULL) {
 		for (int i = 0; i < 4; i++) {
 			for (int j = 0; j < 4; j++) {
@@ -40,7 +39,6 @@ PathFinder::PathFinder( char matrix[4][4], Trie* trie ) {
 		}
 	}
 	DisplayContents( matrixPath );
-	DisplayPaths( matrixPath );
 	BeginPathFind( matrixPath );
 	DisplayWordsFound();
 }
@@ -49,7 +47,6 @@ void PathFinder::BeginPathFind( Element matrixPath[4][4] ) {
 	if (matrixPath != NULL) {
 		for (int i = 0; i < 4; i++) {
 			for (int j = 0; j < 4; j++) {
-				// cout << "BeginPath passing i=" << i << " j=" << j <<"\n";
 				wordStrVector.clear();
 				ResetPaths( matrixPath );
 				SearchFrom(matrixPath, i,j);
@@ -70,14 +67,10 @@ int PathFinder::WordCheck() {
 	std::string word = GetStrFromVector();
 	switch ( dicTrie->SearchWord(word) ) {
 		case 1:
-			// cout << word << " IS FOUND IN TRIE!!!!!!!\n";
-			wordsFound++;
 			return 1;
 		case 2:
-			// cout << word << " is not a word yet.\n";
 			return 2;
 		default:
-			// cout << word << " is NOT a word or begins with those letters.\n";
 			return 0;
 	}
 }
@@ -94,13 +87,6 @@ void PathFinder::SearchFrom( Element matrixPath[4][4], int i, int j) {
 	AppendChar( matrixPath[i][j].GetContent() );
 	matrixPath[i][j].SetVisitedFlagTrue();
 
-	// cout << "\n------------------------------------\n";
-	// cout << "Letters in Vector: " << GetStrFromVector() << "\n";
-	// cout << "i=" << i << " j=" << j << "\n";
-	// cout << "GetWordStrLength is " << GetWordStrLength() << "\n";
-	// DisplayPaths( matrixPath );
-	// cout << "\n------------------------------------\n";
-
 	if( GetWordStrLength()>=3 ) {
 		int wordCheckState = WordCheck();
 		if ( wordCheckState==0 ) {
@@ -114,9 +100,7 @@ void PathFinder::SearchFrom( Element matrixPath[4][4], int i, int j) {
 			matrixPath[i][j].SetVisitedFlagFalse();
 			wordStrVector.pop_back();
 		}
-		// cout << "--POPPED " << matrixPath[i][j].GetContent() << "--\n";			
 	} else {
-		// cout << "--GetWordStrLength is 2 or less--\n";			
 		InitiateMoveList( matrixPath,i,j );
 		if ( GetWordStrLength()==2 ) {
 			matrixPath[i][j].SetVisitedFlagFalse();
@@ -276,7 +260,7 @@ void PathFinder::DisplayWordsFound() {
 		}
 		cout << left << setw(20) << wordList.at(i);
 	}
-	std::cout << "\n\n" << wordsFound << " words found.\n";
+	std::cout << "\n\n" << wordList.size() << " words found.\n";
 }
 
 

@@ -120,16 +120,16 @@ int Trie::SearchWord(std::string str) {
 		str = ToUpperCase(str);
 		while ( current != NULL ) {
 			for ( int i = 0; i < str.length(); i++ ) {
-				Node* tmp = current->FindChild(str[i]); // Last letter of word found
-				if ( tmp == NULL ) {					// Last letter of word not found
+				Node* tmp = current->FindChild(str[i]); 
+				if ( tmp == NULL ) {					
 					return 0; 
 				}
 				current = tmp;
 			}
 			if ( current->HasWordMarker() ) {			
-				return 1;							// Check if it is word. If so add to list
+				return 1;							
 			} else {
-				return 2;							// Not word yet. Keep looking
+				return 2;							
 			}
 		}
     }
